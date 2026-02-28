@@ -1,0 +1,26 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: Multi_Models_integration
+
+  ai:
+    chat:client:enabled: false
+
+#    # api key for open ai
+#    openai:
+#      api-key: ${OPENAI_API_KEY}
+#      chat:
+#        options:
+#          model: gpt-oss-120b
+
+
+    # api key for Ollama
+    ollama:
+      base-url: http://localhost:11434
+      chat:
+        options:
+          model: codellama:latest
+#          temperature: 0.5
+#          max-tokens: 1000

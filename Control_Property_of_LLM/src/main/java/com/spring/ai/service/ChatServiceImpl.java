@@ -3,6 +3,7 @@ package com.spring.ai.service;
 import com.spring.ai.entity.Tut;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.prompt.Prompt;
+import org.springframework.ai.ollama.api.OllamaChatOptions;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 
@@ -14,25 +15,30 @@ public class ChatServiceImpl implements ChatService{
 
     private ChatClient chatClient;
 
-    public ChatServiceImpl(ChatClient.Builder chatClientBuilder) {
-        this.chatClient = chatClientBuilder.build();
+    public ChatServiceImpl(ChatClient.Builder builder) {
+
+        this.chatClient = builder
+                .defaultOptions(OllamaChatOptions.builder()
+                        .model("codellama:latest")
+                        .temperature(0.3)
+                        .build())
+                .build();
     }
 
     @Override
-    public List<Tut> chat(String query) {
-//        String prompt = "tell me about file structure of spring";
-//        // call the llm for response
-//        String content = chatClient
-//                .prompt()
-//                .user(prompt)
-//                .system("As a java developer expert")
-//                .call()
-//                .content();
+    public String chat(String query) {
 
         String prompt = "tell me about file structure of spring";
         // call the llm for response
 //        Prompt prompt1 = new Prompt(prompt);
-        Prompt prompt1 = new Prompt(query);
+//        Prompt prompt1 = new Prompt(query, OllamaChatOptions.builder()
+//                .model("codellama:latest")
+//                .temperature(0.3)
+//                .ma
+//                .build()
+//        );
+
+        Prompt prompt1 = new Prompt(prompt);
         var metadata = chatClient
                 .prompt(prompt1)
                 .call()
@@ -42,11 +48,10 @@ public class ChatServiceImpl implements ChatService{
         System.out.println(metadata);
 
 
-        List<Tut> tutorials = chatClient
-                .prompt(prompt1)
+        var tutorials = chatClient
+                .prompt(query)
                 .call()
-                .entity(new ParameterizedTypeReference<List<Tut>>() {
-                });
+                .content();
 
         return tutorials;
     }
